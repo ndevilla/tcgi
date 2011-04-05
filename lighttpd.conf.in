@@ -1,0 +1,29 @@
+# lighttpd configuration file
+server.modules              = ("mod_cgi")
+
+server.document-root        = "PWD"
+server.errorlog             = server.document-root+"/tmp/error.log"
+accesslog.filename          = server.document-root+"/tmp/access.log"
+
+# files to check for if .../ is requested
+index-file.names            = ( "index.html" ) 
+
+# which extensions should not be handle via static-file transfer
+static-file.exclude-extensions = ( ".cgi" )
+
+# bind to port (default: 80)
+server.port                = 9000
+
+## to help the rc.scripts
+server.pid-file            = server.document-root+"/tmp/lighttpd.pid"
+
+## enable debugging
+debug.log-request-header   = "enable"
+debug.log-response-header  = "enable"
+debug.log-request-handling = "enable"
+debug.log-file-not-found   = "enable"
+
+#### cgi module
+cgi.assign = (".cgi" => "" )
+cgi.execute-all = "enable"
+

@@ -1,0 +1,75 @@
+
+tcgi: CGI engine in C
+=====================
+
+This single source file implements a parser for CGI requests coming from a
+web server. It supports GET and POST and will correctly parse form data,
+both URL-encoded and multipart.
+
+All incoming information are loaded into a dictionary.
+Data from stdin are completely loaded upfront into the dictionary,
+referenced by the key 'content'.
+
+This is not meant to be a web framework, only a basic utility to implement
+CGI in C e.g. for embedded systems.
+
+
+COMPILING
+---------
+You need to obtain the dictionary implementation:
+http://github.com/ndevilla/dict
+
+Copy both source files (dict.c and dict.h) to the main tcgi directory and
+type 'make' to build libtcgi.a. You can also compile it into your own code
+by adding tcgi.c and dict.h to your sources.
+
+
+TESTING
+-------
+
+
+To try it out with a browser:
+$ make test
+This creates a CGI program called 'test.cgi' in the current directory,
+together with a default config file for lighttpd that will serve it on
+localhost port 9000.
+
+Start lighttpd with:
+$ lighttpd -f lighttpd.conf
+And then point your browser to http://localhost:9000
+
+USAGE
+-----
+
+Example code can be found at the end of tcgi.c
+In a nutshell:
+
+    #include "tcgi.h"
+
+    int main(int argc, char * argv[]) 
+    {
+        dict * cgid ;
+        char * content ;
+
+        /* Parse input */
+        cgid = tcgi_parse();
+        /* Dump all variables to stdout */
+        dict_dump(cgid, stdout) ;
+        /* Get uploaded content from a POST request */
+        content = dict_get(cgid, "content", NULL);
+        if (content) {
+            printf("uploaded:\n%s\n", content);
+        }
+        dict_free(cgid);
+        return 0 ;
+    }
+
+License
+-------
+MIT -- See LICENSE file in the top directory.
+
+N. Devillard
+Tue Apr  5 15:18:00 CEST 2011
+
+
+<!-- Convert to HTML using markdown -->
